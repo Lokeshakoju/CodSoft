@@ -1,0 +1,67 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+
+public class CurrencyConverter {
+
+    private static final String API_KEY = "db92f75d33f0acb499e70fd9";
+    private static final String API_ENDPOINT = "https://v6.exchangerate-api.com/v6/db92f75d33f0acb499e70fd9/latest/USD";
+
+    public static void main(String[] args) {
+        try {
+        
+            String baseCurrency = getUserInput("Enter the base currency code : ");
+            String targetCurrency = getUserInput("Enter the target currency code : ");
+
+            String exchangeRatesApiUrl = API_ENDPOINT + "?base=" + baseCurrency + "&apiKey=" + API_KEY;
+            double exchangeRate = getExchangeRate(exchangeRatesApiUrl, targetCurrency);
+
+            double amountToConvert = getAmountToConvert();
+
+            double convertedAmount = amountToConvert * exchangeRate;
+
+            System.out.printf("%.2f %s is equal to %.2f %s\n", amountToConvert, baseCurrency, convertedAmount, targetCurrency);
+        } catch (IOException | URISyntaxException e) {
+            System.err.println("An error occurred: " + e.getMessage());
+        }
+    }
+
+    private static String getUserInput(String prompt) throws IOException {
+        System.out.print(prompt);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        return reader.readLine().toUpperCase(); // Assuming currency codes are entered in uppercase
+    }
+
+    private static double getExchangeRate(String apiUrl, String targetCurrency) throws IOException, URISyntaxException {
+        URI uri = new URI(apiUrl);
+        URL url = uri.toURL();
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder response = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                response.append(line);
+            }
+
+            String jsonResponse = response.toString();
+            String targetCurrencyRate = jsonResponse.split("\"" + targetCurrency + "\":")[1].split(",")[0];
+
+            return Double.parseDouble(targetCurrencyRate);
+        } finally {
+            connection.disconnect();
+        }
+    }
+
+    private static double getAmountToConvert() throws IOException {
+        System.out.print("Enter the amount to convert: ");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        return Double.parseDouble(reader.readLine());
+    }
+}
