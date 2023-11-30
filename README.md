@@ -6,7 +6,8 @@ I had the privilege of undertaking an internship at CodeSoft, where I served as 
 ## Tasks Completed
 During my internship, I successfully completed a range of tasks that enhanced my skills and knowledge in the field. Some of the key tasks include:
 
-##Task 02 - STUDENT GRADE CALCULATOR
+## Task 02 - STUDENT GRADE CALCULATOR
+
 Input: Take marks obtained (out of 100) in each subject.
 Calculate Total Marks: Sum up the marks obtained in all subjects.
 Calculate Average Percentage: Divide the total marks by the total number of subjects to get the
@@ -16,7 +17,8 @@ Display Results: Show the total marks, average percentage, and the corresponding
 
 This program is designed to assist students in evaluating their academic performance based on the marks obtained in various subjects. By providing the marks achieved in each subject (out of 100), the program calculates the total marks, average percentage, and assigns a corresponding grade. The results are then displayed to the user for quick reference.
 
-##Task 04 - CURRENCY CONVERTER
+## Task 04 - CURRENCY CONVERTER
+
 Currency Selection: Allow the user to choose the base currency and the target
 currency.
 Currency Rates: Fetch real-time exchange rates from a reliable API.
@@ -27,7 +29,8 @@ Display Result: Show the converted amount and the target currenY symbol to the u
 
 This Java program facilitates effortless currency conversion by enabling users to choose the base and target currencies, fetching real-time exchange rates from a reliable API. Users input the amount they want to convert, and the program swiftly performs the currency conversion, displaying the converted amount along with the target currency symbol.
 
-##Task05 - STUDENT MANAGEMENT SYSTEM
+## Task05 - STUDENT MANAGEMENT SYSTEM
+
 1. Create a Student class to represent individual students. Include attributes such as name, roll
 number, grade, and any other relevant details.
 2. Implement a StudentManagementSystem class to manage the collection of students. Include
