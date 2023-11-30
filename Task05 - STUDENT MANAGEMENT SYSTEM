@@ -1,0 +1,194 @@
+import java.io.*;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+class Student implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private String name;
+    private int rollNumber;
+    private String grade;
+
+    public Student(String name, int rollNumber, String grade) {
+        this.name = name;
+        this.rollNumber = rollNumber;
+        this.grade = grade;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getRollNumber() {
+        return rollNumber;
+    }
+
+    public String getGrade() {
+        return grade;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "name='" + name + '\'' +
+                ", rollNumber=" + rollNumber +
+                ", grade='" + grade + '\'' +
+                '}';
+    }
+}
+
+class StudentManagementSystem implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private Connection connection;
+
+    public StudentManagementSystem(Connection connection) {
+        this.connection = connection;
+
+        // Create the 'students' table if it doesn't exist
+        try (Statement statement = connection.createStatement()) {
+            String createTableSQL = "CREATE TABLE IF NOT EXISTS students (" +
+                    "id INT AUTO_INCREMENT PRIMARY KEY," +
+                    "name VARCHAR(255) NOT NULL," +
+                    "roll_no INT NOT NULL," +
+                    "grade VARCHAR(255) NOT NULL)";
+            statement.execute(createTableSQL);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addStudentToDatabase(Student student) {
+        String insertSQL = "INSERT INTO students (name, roll_no, grade) VALUES (?, ?, ?)";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
+            preparedStatement.setString(1, student.getName());
+            preparedStatement.setInt(2, student.getRollNumber());
+            preparedStatement.setString(3, student.getGrade());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void removeStudentFromDatabase(int rollNumber) {
+        String deleteSQL = "DELETE FROM students WHERE roll_no = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL)) {
+            preparedStatement.setInt(1, rollNumber);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ArrayList<Student> getAllStudentsFromDatabase() {
+        ArrayList<Student> students = new ArrayList<>();
+        String selectSQL = "SELECT * FROM students";
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(selectSQL)) {
+            while (resultSet.next()) {
+                Student student = new Student(
+                        resultSet.getString("name"),
+                        resultSet.getInt("roll_no"),
+                        resultSet.getString("grade")
+                );
+                students.add(student);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return students;
+    }
+}
+
+public class StudentManagementApp {
+    public static void main(String[] args) {
+        try (Scanner scanner = new Scanner(System.in)) {
+            // Prompt the user for database connection details
+            System.out.print("Enter database URL: ");
+            String url = scanner.nextLine();
+            System.out.print("Enter database username: ");
+            String username = scanner.nextLine();
+            System.out.print("Enter database password: ");
+            String password = scanner.nextLine();
+
+            // Connect to the database
+            try (Connection connection = DriverManager.getConnection(url, username, password)) {
+                StudentManagementSystem studentManagementSystem = new StudentManagementSystem(connection);
+
+                while (true) {
+                    System.out.println("\nStudent Management System");
+                    System.out.println("1. Add Student");
+                    System.out.println("2. Remove Student");
+                    System.out.println("3. Display All Students");
+                    System.out.println("4. Exit");
+                    System.out.print("Enter your choice: ");
+
+                    int choice = scanner.nextInt();
+                    scanner.nextLine(); // Consume the newline character
+
+                    switch (choice) {
+                        case 1:
+                            addStudent(scanner, studentManagementSystem);
+                            break;
+
+                        case 2:
+                            removeStudent(scanner, studentManagementSystem);
+                            break;
+
+                        case 3:
+                            displayAllStudents(studentManagementSystem);
+                            break;
+
+                        case 4:
+                            System.out.println("Exiting the application.");
+                            System.exit(0);
+                            break;
+
+                        default:
+                            System.out.println("Invalid choice. Please enter a number between 1 and 4.");
+                    }
+                }
+            } // Connection will be automatically closed when the try block is exited
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void addStudent(Scanner scanner, StudentManagementSystem system) {
+        System.out.print("Enter student name: ");
+        String name = scanner.nextLine();
+        System.out.print("Enter roll no: ");
+        int rollNumber = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
+        System.out.print("Enter grade: ");
+        String grade = scanner.nextLine();
+
+        if (name.isEmpty() || grade.isEmpty()) {
+            System.out.println("Error: Name and grade cannot be empty.");
+        } else {
+            system.addStudentToDatabase(new Student(name, rollNumber, grade));
+            System.out.println("Student added successfully.");
+        }
+    }
+
+    private static void removeStudent(Scanner scanner, StudentManagementSystem system) {
+        System.out.print("Enter roll nojdbc:mysql://localhost:3306/first to remove: ");
+        int removeRollNumber = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
+        system.removeStudentFromDatabase(removeRollNumber);
+        System.out.println("Student removed successfully.");
+    }
+
+    private static void displayAllStudents(StudentManagementSystem system) {
+        ArrayList<Student> allStudents = system.getAllStudentsFromDatabase();
+        if (allStudents.isEmpty()) {
+            System.out.println("No students found.");
+        } else {
+            System.out.println("All Students:");
+            for (Student student : allStudents) {
+                System.out.println(student);
+            }
+        }
+    }
+}
