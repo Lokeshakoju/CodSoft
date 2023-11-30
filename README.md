@@ -9,10 +9,14 @@ During my internship, I successfully completed a range of tasks that enhanced my
 ## Task 02 - STUDENT GRADE CALCULATOR
 
 Input: Take marks obtained (out of 100) in each subject.
+
 Calculate Total Marks: Sum up the marks obtained in all subjects.
+
 Calculate Average Percentage: Divide the total marks by the total number of subjects to get the
 average percentage.
+
 Grade Calculation: Assign grades based on the average percentage achieved.
+
 Display Results: Show the total marks, average percentage, and the corresponding grade to the user
 
 This program is designed to assist students in evaluating their academic performance based on the marks obtained in various subjects. By providing the marks achieved in each subject (out of 100), the program calculates the total marks, average percentage, and assigns a corresponding grade. The results are then displayed to the user for quick reference.
@@ -21,10 +25,14 @@ This program is designed to assist students in evaluating their academic perform
 
 Currency Selection: Allow the user to choose the base currency and the target
 currency.
+
 Currency Rates: Fetch real-time exchange rates from a reliable API.
+
 Amount Input: Take input from the user for the amount they want to convert.
+
 Currency Conversion: Convert the input amount from the base currency to the
 target currency using the fetched exchange rate.
+
 Display Result: Show the converted amount and the target currenY symbol to the user.
 
 This Java program facilitates effortless currency conversion by enabling users to choose the base and target currencies, fetching real-time exchange rates from a reliable API. Users input the amount they want to convert, and the program swiftly performs the currency conversion, displaying the converted amount along with the target currency symbol.
